@@ -2,12 +2,13 @@
   <x:Members>
     <x:Property Name="BMSCL_FileList" Type="InArgument(s:String[])" />
     <x:Property Name="CLL_FileList" Type="InArgument(s:String[])" />
+    <x:Property Name="Upload_Failed_List" Type="OutArgument(s:String[])" />
   </x:Members>
   <sap2010:ExpressionActivityEditor.ExpressionActivityEditor>C#</sap2010:ExpressionActivityEditor.ExpressionActivityEditor>
-  <sap:VirtualizedContainerService.HintSize>1008,639</sap:VirtualizedContainerService.HintSize>
+  <sap:VirtualizedContainerService.HintSize>1025,1437</sap:VirtualizedContainerService.HintSize>
   <sap2010:WorkflowViewState.IdRef>ActivityBuilder_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
-    <scg:List x:TypeArguments="x:String" Capacity="29">
+    <scg:List x:TypeArguments="x:String" Capacity="30">
       <x:String>System.Activities</x:String>
       <x:String>System.Activities.Statements</x:String>
       <x:String>System.Activities.Expressions</x:String>
@@ -37,10 +38,11 @@
       <x:String>System.Management.Automation</x:String>
       <x:String>System.Dynamic</x:String>
       <x:String>System.Linq.Expressions</x:String>
+      <x:String>System.Activities.DynamicUpdate</x:String>
     </scg:List>
   </TextExpression.NamespacesForImplementation>
   <TextExpression.ReferencesForImplementation>
-    <scg:List x:TypeArguments="AssemblyReference" Capacity="27">
+    <scg:List x:TypeArguments="AssemblyReference" Capacity="32">
       <AssemblyReference>Microsoft.CSharp</AssemblyReference>
       <AssemblyReference>System</AssemblyReference>
       <AssemblyReference>System.Core</AssemblyReference>
@@ -68,36 +70,194 @@
       <AssemblyReference>System.Reflection.Metadata</AssemblyReference>
       <AssemblyReference>System.Memory</AssemblyReference>
       <AssemblyReference>System.Management.Automation</AssemblyReference>
+      <AssemblyReference>Microsoft.Bcl.AsyncInterfaces</AssemblyReference>
+      <AssemblyReference>System.ValueTuple</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.Composition</AssemblyReference>
+      <AssemblyReference>UiPath.Excel</AssemblyReference>
     </scg:List>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="Roca_Upload_Files" sap:VirtualizedContainerService.HintSize="426,272" sap2010:WorkflowViewState.IdRef="Sequence_1">
+  <Sequence DisplayName="Roca_Upload_Files" sap:VirtualizedContainerService.HintSize="526,1372" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <Sequence.Variables>
       <Variable x:TypeArguments="x:String" Name="Script" />
-      <Variable x:TypeArguments="sco:Collection(scg:List(x:String))" Name="Output" />
+      <Variable x:TypeArguments="sco:Collection(x:String)" Name="Output" />
+      <Variable x:TypeArguments="x:Int32" Default="1" Name="Exist_BMSCL_Files_Flag" />
+      <Variable x:TypeArguments="x:Int32" Default="1" Name="Exist_CLL_Files_Flag" />
     </Sequence.Variables>
     <sap:WorkflowViewStateService.ViewState>
       <scg:Dictionary x:TypeArguments="x:String, x:Object">
         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
-    <ui:ReadTextFile DisplayName="读取文本文件" FileName="Roca_Upload_Files.ps1" sap:VirtualizedContainerService.HintSize="384,81" sap2010:WorkflowViewState.IdRef="ReadTextFile_1">
+    <If DisplayName="IF 条件" sap:VirtualizedContainerService.HintSize="484,325" sap2010:WorkflowViewState.IdRef="If_1">
+      <If.Condition>
+        <InArgument x:TypeArguments="x:Boolean">
+          <mca:CSharpValue x:TypeArguments="x:Boolean" sap2010:WorkflowViewState.IdRef="CSharpValue`1_16">BMSCL_FileList.Length == 0</mca:CSharpValue>
+        </InArgument>
+      </If.Condition>
+      <If.Then>
+        <ui:MultipleAssign DisplayName="多重分配" sap:VirtualizedContainerService.HintSize="432,131" sap2010:WorkflowViewState.IdRef="MultipleAssign_1">
+          <ui:MultipleAssign.AssignOperations>
+            <scg:List x:TypeArguments="ui:AssignOperation" Capacity="4">
+              <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_1">
+                <ui:AssignOperation.To>
+                  <OutArgument x:TypeArguments="s:String[]">
+                    <mca:CSharpReference x:TypeArguments="s:String[]" sap2010:WorkflowViewState.IdRef="CSharpReference`1_7">BMSCL_FileList</mca:CSharpReference>
+                  </OutArgument>
+                </ui:AssignOperation.To>
+                <ui:AssignOperation.Value>
+                  <InArgument x:TypeArguments="s:String[]">
+                    <mca:CSharpValue x:TypeArguments="s:String[]" sap2010:WorkflowViewState.IdRef="CSharpValue`1_20">new string[] {"null"}</mca:CSharpValue>
+                  </InArgument>
+                </ui:AssignOperation.Value>
+              </ui:AssignOperation>
+              <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_2">
+                <ui:AssignOperation.To>
+                  <OutArgument x:TypeArguments="x:Int32">
+                    <mca:CSharpReference x:TypeArguments="x:Int32" sap2010:WorkflowViewState.IdRef="CSharpReference`1_8">Exist_BMSCL_Files_Flag</mca:CSharpReference>
+                  </OutArgument>
+                </ui:AssignOperation.To>
+                <ui:AssignOperation.Value>
+                  <InArgument x:TypeArguments="x:Int32">0</InArgument>
+                </ui:AssignOperation.Value>
+              </ui:AssignOperation>
+            </scg:List>
+          </ui:MultipleAssign.AssignOperations>
+        </ui:MultipleAssign>
+      </If.Then>
+      <If.Else>
+        <Sequence sap:VirtualizedContainerService.HintSize="242,85" sap2010:WorkflowViewState.IdRef="Sequence_9">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+        </Sequence>
+      </If.Else>
+    </If>
+    <If DisplayName="IF 条件" sap:VirtualizedContainerService.HintSize="484,325" sap2010:WorkflowViewState.IdRef="If_2">
+      <If.Condition>
+        <InArgument x:TypeArguments="x:Boolean">
+          <mca:CSharpValue x:TypeArguments="x:Boolean" sap2010:WorkflowViewState.IdRef="CSharpValue`1_18">CLL_FileList.Length == 0</mca:CSharpValue>
+        </InArgument>
+      </If.Condition>
+      <If.Then>
+        <ui:MultipleAssign DisplayName="多重分配" sap:VirtualizedContainerService.HintSize="432,131" sap2010:WorkflowViewState.IdRef="MultipleAssign_2">
+          <ui:MultipleAssign.AssignOperations>
+            <scg:List x:TypeArguments="ui:AssignOperation" Capacity="4">
+              <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_3">
+                <ui:AssignOperation.To>
+                  <OutArgument x:TypeArguments="s:String[]">
+                    <mca:CSharpReference x:TypeArguments="s:String[]" sap2010:WorkflowViewState.IdRef="CSharpReference`1_9">CLL_FileList</mca:CSharpReference>
+                  </OutArgument>
+                </ui:AssignOperation.To>
+                <ui:AssignOperation.Value>
+                  <InArgument x:TypeArguments="s:String[]">
+                    <mca:CSharpValue x:TypeArguments="s:String[]" sap2010:WorkflowViewState.IdRef="CSharpValue`1_21">new string[] {"null"}</mca:CSharpValue>
+                  </InArgument>
+                </ui:AssignOperation.Value>
+              </ui:AssignOperation>
+              <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_4">
+                <ui:AssignOperation.To>
+                  <OutArgument x:TypeArguments="x:Int32">
+                    <mca:CSharpReference x:TypeArguments="x:Int32" sap2010:WorkflowViewState.IdRef="CSharpReference`1_10">Exist_CLL_Files_Flag</mca:CSharpReference>
+                  </OutArgument>
+                </ui:AssignOperation.To>
+                <ui:AssignOperation.Value>
+                  <InArgument x:TypeArguments="x:Int32">0</InArgument>
+                </ui:AssignOperation.Value>
+              </ui:AssignOperation>
+            </scg:List>
+          </ui:MultipleAssign.AssignOperations>
+        </ui:MultipleAssign>
+      </If.Then>
+      <If.Else>
+        <Sequence sap2010:WorkflowViewState.IdRef="Sequence_11">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+        </Sequence>
+      </If.Else>
+    </If>
+    <ui:ReadTextFile DisplayName="读取文本文件" FileName="Roca_Upload_Files.ps1" sap:VirtualizedContainerService.HintSize="484,81" sap2010:WorkflowViewState.IdRef="ReadTextFile_1">
       <ui:ReadTextFile.Content>
         <OutArgument x:TypeArguments="x:String">
           <mca:CSharpReference x:TypeArguments="x:String" sap2010:WorkflowViewState.IdRef="CSharpReference`1_1">Script</mca:CSharpReference>
         </OutArgument>
       </ui:ReadTextFile.Content>
     </ui:ReadTextFile>
-    <ui:InvokePowerShell x:TypeArguments="scg:List(x:String)" ContinueOnError="{x:Null}" DisplayName="调用 PowerShell" sap:VirtualizedContainerService.HintSize="384,59" sap2010:WorkflowViewState.IdRef="InvokePowerShell`1_1" IsScript="True">
+    <ui:InvokePowerShell x:TypeArguments="x:String" ContinueOnError="{x:Null}" DisplayName="调用 PowerShell" sap:VirtualizedContainerService.HintSize="484,59" sap2010:WorkflowViewState.IdRef="InvokePowerShell`1_2" IsScript="True">
       <ui:InvokePowerShell.CommandText>
         <InArgument x:TypeArguments="x:String">
           <mca:CSharpValue x:TypeArguments="x:String" sap2010:WorkflowViewState.IdRef="CSharpValue`1_1">Script</mca:CSharpValue>
         </InArgument>
       </ui:InvokePowerShell.CommandText>
       <ui:InvokePowerShell.Output>
-        <OutArgument x:TypeArguments="sco:Collection(scg:List(x:String))">
-          <mca:CSharpReference x:TypeArguments="sco:Collection(scg:List(x:String))" sap2010:WorkflowViewState.IdRef="CSharpReference`1_2">Output</mca:CSharpReference>
+        <OutArgument x:TypeArguments="sco:Collection(x:String)">
+          <mca:CSharpReference x:TypeArguments="sco:Collection(x:String)" sap2010:WorkflowViewState.IdRef="CSharpReference`1_3">Output</mca:CSharpReference>
         </OutArgument>
       </ui:InvokePowerShell.Output>
+      <ui:InvokePowerShell.Parameters>
+        <InArgument x:TypeArguments="s:String[]" x:Key="BMSCL_Files_Array">
+          <mca:CSharpValue x:TypeArguments="s:String[]" sap2010:WorkflowViewState.IdRef="CSharpValue`1_15">BMSCL_FileList</mca:CSharpValue>
+        </InArgument>
+        <InArgument x:TypeArguments="s:String[]" x:Key="CLL_Files_Array">
+          <mca:CSharpValue x:TypeArguments="s:String[]" sap2010:WorkflowViewState.IdRef="CSharpValue`1_14">CLL_FileList</mca:CSharpValue>
+        </InArgument>
+        <InArgument x:TypeArguments="x:String" x:Key="BMSCL_UserName">R0002200003S</InArgument>
+        <InArgument x:TypeArguments="x:String" x:Key="BMSCL_Password">HOLA133</InArgument>
+        <InArgument x:TypeArguments="x:String" x:Key="CLL_UserName">R0002200174S</InArgument>
+        <InArgument x:TypeArguments="x:String" x:Key="CLL_Password">NOT123</InArgument>
+        <InArgument x:TypeArguments="x:Int32" x:Key="Exist_BMSCL_Files_Flag">
+          <mca:CSharpValue x:TypeArguments="x:Int32" sap2010:WorkflowViewState.IdRef="CSharpValue`1_22">Exist_BMSCL_Files_Flag</mca:CSharpValue>
+        </InArgument>
+        <InArgument x:TypeArguments="x:Int32" x:Key="Exist_CLL_Files_Flag">
+          <mca:CSharpValue x:TypeArguments="x:Int32" sap2010:WorkflowViewState.IdRef="CSharpValue`1_23">Exist_CLL_Files_Flag</mca:CSharpValue>
+        </InArgument>
+      </ui:InvokePowerShell.Parameters>
     </ui:InvokePowerShell>
+    <ui:CommentOut DisplayName="注释掉" sap:VirtualizedContainerService.HintSize="484,229" sap2010:WorkflowViewState.IdRef="CommentOut_6">
+      <ui:CommentOut.Body>
+        <Sequence DisplayName="已忽略的活动" sap:VirtualizedContainerService.HintSize="376,151" sap2010:WorkflowViewState.IdRef="Sequence_7">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <ui:InvokePowerShell x:TypeArguments="scg:List(x:String)" ContinueOnError="{x:Null}" DisplayName="调用 PowerShell" sap:VirtualizedContainerService.HintSize="334,59" sap2010:WorkflowViewState.IdRef="InvokePowerShell`1_4" IsScript="True">
+            <ui:InvokePowerShell.CommandText>
+              <InArgument x:TypeArguments="x:String">
+                <mca:CSharpValue x:TypeArguments="x:String" sap2010:WorkflowViewState.IdRef="CSharpValue`1_8">Script</mca:CSharpValue>
+              </InArgument>
+            </ui:InvokePowerShell.CommandText>
+            <ui:InvokePowerShell.Parameters>
+              <InArgument x:TypeArguments="s:String[]" x:Key="BMSCL_Files_Array">
+                <mca:CSharpValue x:TypeArguments="s:String[]" sap2010:WorkflowViewState.IdRef="CSharpValue`1_11">new String[]{"1"}</mca:CSharpValue>
+              </InArgument>
+              <InArgument x:TypeArguments="s:String[]" x:Key="CLL_Files_Array">
+                <mca:CSharpValue x:TypeArguments="s:String[]" sap2010:WorkflowViewState.IdRef="CSharpValue`1_12">new String[]{"1"}</mca:CSharpValue>
+              </InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="BMSCL_UserName">1</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="BMSCL_Password">1</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="CLL_UserName">1</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="CLL_Password">1</InArgument>
+            </ui:InvokePowerShell.Parameters>
+          </ui:InvokePowerShell>
+        </Sequence>
+      </ui:CommentOut.Body>
+    </ui:CommentOut>
+    <Assign DisplayName="分配" sap:VirtualizedContainerService.HintSize="484,61" sap2010:WorkflowViewState.IdRef="Assign_1">
+      <Assign.To>
+        <OutArgument x:TypeArguments="s:String[]">
+          <mca:CSharpReference x:TypeArguments="s:String[]" sap2010:WorkflowViewState.IdRef="CSharpReference`1_4">Upload_Failed_List</mca:CSharpReference>
+        </OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="s:String[]">
+          <mca:CSharpValue x:TypeArguments="s:String[]" sap2010:WorkflowViewState.IdRef="CSharpValue`1_13">Output.ToArray()</mca:CSharpValue>
+        </InArgument>
+      </Assign.Value>
+    </Assign>
   </Sequence>
 </Activity>
